@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="dodge.vcxproj" />
+  <Project Path="dodge.vcxproj" Id="50a0bb0f-9ea9-4ba3-9dbf-8c1e33a2a268" />
 </Solution>
