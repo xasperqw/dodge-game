@@ -22,15 +22,16 @@ public:
 
 private:
     const float unitRadius = 30.f;
-    const float bulletRadius = 12.f;
+    const float bulletRadius = 10.f;
     const float unitSpeed = 220.f;
     const float bulletSpeed = 250.f;
 
     sf::RenderWindow window;
     sf::RectangleShape field;
+    sf::CircleShape enemy;
+
     std::vector<Unit> units;
     std::vector<Bullet> bullets;
-    sf::CircleShape enemy;
 
     int activeUnit = 0;
     int score = 0;
@@ -41,16 +42,10 @@ private:
 
     sf::Font font;
     bool fontLoaded = false;
+
     sf::Text titleText;
     sf::Text scoreText;
     sf::Text gameOverText;
-
-    sf::Texture unitTexture;
-    sf::Texture enemyTexture;
-    sf::Texture bulletTexture;
-    bool hasUnitTexture = false;
-    bool hasEnemyTexture = false;
-    bool hasBulletTexture = false;
 
     void processEvents();
     void update(float dt);
