@@ -95,3 +95,73 @@ void Game::update(float dt)
 
         moveBullets(dt);
     }
+
+    updateText();
+}
+
+void Game::render()
+{
+    window.clear(sf::Color(20, 25, 35));
+    window.draw(field);
+    window.draw(enemy);
+
+    for (std::size_t i = 0; i < units.size(); ++i)
+    {
+        units[i].shape.setOutlineThickness(i == static_cast<std::size_t>(activeUnit) ? 4.f : 0.f);
+        units[i].shape.setOutlineColor(sf::Color::Yellow);
+        window.draw(units[i].shape);
+
+        if (fontLoaded)
+        {
+            sf::Text label(font, std::to_string(i + 1), 24);
+            label.setFillColor(sf::Color::Black);
+            centerText(label, units[i].shape.getPosition());
+            window.draw(label);
+        }
+    }
+
+    for (const auto& b : bullets)
+        window.draw(b.shape);
+
+    if (fontLoaded)
+    {
+        window.draw(titleText);
+        window.draw(scoreText);
+
+        if (gameOver)
+            window.draw(gameOverText);
+    }
+
+    window.display();
+}
+
+void Game::resetGame()
+{
+    score = 0;
+    activeUnit = 0;
+    gameOver = false;
+    bullets.clear();
+    shootClock.restart();
+
+    enemy.setPosition({ 400.f, 150.f });
+    enemy.setFillColor(sf::Color(200, 70, 70));
+
+    createUnits();
+    updateText();
+}
+
+void Game::createUnits()
+{
+    units.clear();
+
+    sf::Vector2f pos[3] = {
+        {220.f, 420.f},
+        {400.f, 450.f},
+        {580.f, 420.f}
+    };
+
+    sf::Color colors[3] = {
+        sf::Color(80, 180, 255),
+        sf::Color(110, 230, 120),
+        sf::Color(245, 200, 90)
+    };
