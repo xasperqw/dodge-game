@@ -210,3 +210,84 @@ void Game::moveUnits(float dt)
         }
     }
 }
+
+void Game::moveBullets(float dt)
+{
+    for (std::size_t i = 0; i < bullets.size();)
+    {
+        bullets[i].shape.move(bullets[i].velocity * dt);
+        sf::Vector2f pos = bullets[i].shape.getPosition();
+
+        bool hit = false;
+
+        for (auto& u : units)
+        {
+            if (distance(pos, u.shape.getPosition()) <= bulletRadius + unitRadius)
+            {
+                gameOver = true;
+                hit = true;
+                break;
+            }
+        }
+
+        if (hit)
+            break;
+
+        if (!field.getGlobalBounds().contains(pos))
+        {
+            bullets.erase(bullets.begin() + static_cast<std::ptrdiff_t>(i));
+            score++;
+        }
+        else
+        {
+            ++i;
+        }
+    }
+}
+
+void Game::updateText()
+{
+    if (!fontLoaded)
+        return;
+
+    titleText.setPosition({ 60.f, 20.f });
+
+    scoreText.setString(
+        "Score: " + std::to_string(score) +
+        "   Active unit: " + std::to_string(activeUnit + 1)
+    );
+    scoreText.setPosition({ 60.f, 555.f });
+
+    gameOverText.setString("Game Over");
+    centerText(gameOverText, { 400.f, 300.f });
+}
+
+void Game::centerText(sf::Text& text, sf::Vector2f pos)
+{
+    sf::FloatRect b = text.getLocalBounds();
+    text.setOrigin({
+        b.position.x + b.size.x / 2.f,
+        b.position.y + b.size.y / 2.f
+        });
+    text.setPosition(pos);
+}
+
+float Game::length(sf::Vector2f v)
+{
+    return std::sqrt(v.x * v.x + v.y * v.y);
+}
+
+sf::Vector2f Game::normalize(sf::Vector2f v)
+{
+    float len = length(v);
+
+    if (len == 0.f)
+        return { 0.f, 0.f };
+
+    return v / len;
+}
+
+float Game::distance(sf::Vector2f a, sf::Vector2f b)
+{
+    return length(a - b);
+}
