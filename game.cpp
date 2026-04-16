@@ -165,3 +165,48 @@ void Game::createUnits()
         sf::Color(110, 230, 120),
         sf::Color(245, 200, 90)
     };
+    for (int i = 0; i < 3; ++i)
+    {
+        Unit u;
+        u.shape.setRadius(unitRadius);
+        u.shape.setOrigin({ unitRadius, unitRadius });
+        u.shape.setPosition(pos[i]);
+        u.shape.setFillColor(colors[i]);
+        u.target = pos[i];
+        units.push_back(u);
+    }
+}
+
+void Game::shoot()
+{
+    int index = std::rand() % 3;
+    sf::Vector2f start = enemy.getPosition();
+    sf::Vector2f target = units[index].shape.getPosition();
+
+    Bullet b;
+    b.shape.setRadius(bulletRadius);
+    b.shape.setOrigin({ bulletRadius, bulletRadius });
+    b.shape.setPosition(start);
+    b.shape.setFillColor(sf::Color(250, 130, 130));
+    b.velocity = normalize(target - start) * bulletSpeed;
+    bullets.push_back(b);
+}
+
+void Game::moveUnits(float dt)
+{
+    for (auto& u : units)
+    {
+        sf::Vector2f dir = u.target - u.shape.getPosition();
+        float dist = length(dir);
+
+        if (dist > 2.f)
+        {
+            sf::Vector2f step = normalize(dir) * unitSpeed * dt;
+
+            if (length(step) >= dist)
+                u.shape.setPosition(u.target);
+            else
+                u.shape.move(step);
+        }
+    }
+}
